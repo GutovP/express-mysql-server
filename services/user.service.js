@@ -1,3 +1,4 @@
+const session = require('express-session');
 const connection = require('../config/db.config');
 
 function getAll(req, res) {
@@ -35,6 +36,15 @@ function login(req, res) {
     }
     res.json(result);
   });
+  if (email && password) {
+    const user = sqlQuery.find(
+      (user) => user.email === email && user.password === password
+    );
+    if (user) {
+      req.session.id = user.id;
+      req.session.username = user.username;
+    }
+  }
 }
 function logout(req, res) {
   const sqlQuery = `SELECT * FROM users WHERE email = ''`;
